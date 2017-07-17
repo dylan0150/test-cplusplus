@@ -53,6 +53,12 @@ int x = sizeof (char); // >> outputs to following
 // >> SHR
 // new delete
 
+inline string combine(const string& a, const string& b) {
+  return a+b; //when compiled function is inserted directly rather than being looked up via a function call. Frequently used small utility functions are good for this. Most good compilers are clever enough to do this anyway so basically useless.
+}
+
+void func() {}; //not storage
+
 int main() {
   a = (b=3,b+2);
   int aa;
@@ -74,9 +80,3 @@ World!"; //requires #include string
 iamathing:
   return 0;
 }
-
-inline string combine(const string& a, const string& b) {
-  return a+b; //when compiled function is inserted directly rather than being looked up via a function call. Frequently used small utility functions are good for this. Most good compilers are clever enough to do this anyway so basically useless.
-}
-
-void func() {}; //not storage
