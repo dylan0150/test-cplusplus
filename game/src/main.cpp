@@ -1,5 +1,7 @@
+#include <string>
 #include <SDL.h>
 #include <stdio.h>
+
 
 const int SCREEN_WIDTH              = 640;
 const int SCREEN_HEIGHT             = 480;
@@ -58,13 +60,20 @@ void pollEvents() {
   while ( SDL_PollEvent( &e ) != 0 ) {
     switch ( e.type ) {
       case SDL_QUIT: quit = true; break;
+      case SDL_KEYDOWN:
+        switch ( e.key.keysym.sym ) {
+          case SDLK_UP    : printf("Key pressed %s\n", "SLK_UP" );     break;
+          case SDLK_DOWN  : printf("Key pressed %s\n", "SDLK_DOWN" );  break;
+          case SDLK_LEFT  : printf("Key pressed %s\n", "SDLK_LEFT" );  break;
+          case SDLK_RIGHT : printf("Key pressed %s\n", "SDLK_RIGHT" ); break;
+        } break;
     }
   }
 }
 
 void close() {
-  SDL_FreeSurface( gHelloWorld );
-  gHelloWorld = NULL;
+  SDL_FreeSurface( gCurrentSurface );
+  gCurrentSurface = NULL;
   SDL_DestroyWindow( gWindow );
   gWindow = NULL;
   SDL_Quit();
@@ -76,7 +85,7 @@ int main( int argc, char* args[] ) {
 
   while ( !quit ) {
     pollEvents();
-    SDL_BlitSurface( gHelloWorld, NULL, gScreenSurface, NULL );
+    SDL_BlitSurface( gCurrentSurface, NULL, gScreenSurface, NULL );
     SDL_UpdateWindowSurface( gWindow );
   }
 
