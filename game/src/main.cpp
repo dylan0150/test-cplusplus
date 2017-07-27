@@ -2,6 +2,9 @@
 #include <SDL.h>
 #include <stdio.h>
 
+bool quit = false;
+
+#include "sdlevent.cpp"
 
 const int SCREEN_WIDTH              = 640;
 const int SCREEN_HEIGHT             = 480;
@@ -18,18 +21,15 @@ SDL_Surface* gScreenSurface  = NULL;
 SDL_Surface* gCurrentSurface = NULL;
 SDL_Surface* gKeyPressSurfaces[ KEY_PRESS_SURFACE_TOTAL ];
 
-bool quit = false;
-SDL_Event e;
-
 bool init() {
   bool success = true;
   if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
-    printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
+    SDL_Log( "SDL could not initialize! SDL_Error: %d", SDL_GetError() );
     success = false;
   } else {
     gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
     if ( gWindow == NULL ) {
-      printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
+      SDL_Log( "Window could not be created! SDL_Error: %d", SDL_GetError() );
       success = false;
     } else {
       gScreenSurface = SDL_GetWindowSurface( gWindow );
@@ -41,7 +41,7 @@ bool init() {
 SDL_Surface* loadSurface( std::string path ) {
   SDL_Surface* loadedSurface = SDL_LoadBMP( path.c_str() );
   if( loadedSurface == NULL ) {
-    printf( "Unable to load image %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
+    SDL_Log( "Unable to load image %d! SDL Error: %d", path.c_str(), SDL_GetError() );
   }
   return loadedSurface;
 }
@@ -50,25 +50,10 @@ bool loadMedia() {
   bool success = true;
   gCurrentSurface = SDL_LoadBMP( "../res/test.bmp" );
   if ( gCurrentSurface == NULL ) {
-    printf( "Unable to load image %s! SDL Error: %s\n", "../res/test.bmp", SDL_GetError() );
+    SDL_Log( "Unable to load image %d! SDL Error: %d", "../res/test.bmp", SDL_GetError() );
     success = false;
   }
   return success;
-}
-
-void pollEvents() {
-  while ( SDL_PollEvent( &e ) != 0 ) {
-    switch ( e.type ) {
-      case SDL_QUIT: quit = true; break;
-      case SDL_KEYDOWN:
-        switch ( e.key.keysym.sym ) {
-          case SDLK_UP    : printf("Key pressed %s\n", "SLK_UP" );     break;
-          case SDLK_DOWN  : printf("Key pressed %s\n", "SDLK_DOWN" );  break;
-          case SDLK_LEFT  : printf("Key pressed %s\n", "SDLK_LEFT" );  break;
-          case SDLK_RIGHT : printf("Key pressed %s\n", "SDLK_RIGHT" ); break;
-        } break;
-    }
-  }
 }
 
 void close() {
@@ -80,8 +65,8 @@ void close() {
 }
 
 int main( int argc, char* args[] ) {
-  if ( !init() )      { printf( "Failed to initialize!\n" ); close(); return 1; }
-  if ( !loadMedia() ) { printf( "Failed to load media!\n" ); close(); return 1; }
+  if ( !init() )      { SDL_Log( "Failed to initialize!" ); close(); return 1; }
+  if ( !loadMedia() ) { SDL_Log( "Failed to load media!" ); close(); return 1; }
 
   while ( !quit ) {
     pollEvents();
