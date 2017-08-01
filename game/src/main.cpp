@@ -1,47 +1,49 @@
 #include <string>
+#include <vector>
 #include <SDL.h>
+#include <SDL2/SDL_image.h>
 #include <stdio.h>
 
-bool quit = false;
-
+#include "sdldefinitions.cpp"
+#include "sdlobjects.cpp"
 #include "sdlevent.cpp"
-
-int SCREEN_WIDTH              = 640;
-int SCREEN_HEIGHT             = 480;
-
-SDL_Window* gWindow = NULL;
+#include "sdltexture.cpp"
 
 bool init() {
-  bool success = true;
   if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
     SDL_Log( "SDL could not initialize! SDL_Error: %d", SDL_GetError() );
-    success = false;
-  } else {
-    gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-    if ( gWindow == NULL ) {
-      SDL_Log( "Window could not be created! SDL_Error: %d", SDL_GetError() );
-      success = false;
-    } else {
-
-    }
+    return false;
   }
-  return success;
+  gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+  if ( gWindow == NULL ) {
+    SDL_Log( "Window could not be created! SDL_Error: %d", SDL_GetError() );
+    return false;
+  }
+  if ( !loadRender() ) {
+    SDL_Log( "Render failed!" );
+    return false;
+  }
+  return true;
 }
 
 void close() {
+  SDL_DestroyTexture( gTexture );
+  gTexture = NULL;
+  SDL_DestroyRenderer( gRenderer );
+  gRenderer = NULL;
   SDL_DestroyWindow( gWindow );
   gWindow = NULL;
+  IMG_Quit();
   SDL_Quit();
 }
 
 int main( int argc, char* args[] ) {
-  if ( !init() )      { SDL_Log( "Failed to initialize!" ); close(); return 1; }
-
+  if ( !init() ) { SDL_Log( "Failed to initialize!" ); close(); return 1; }
   while ( !quit ) {
     pollEvents();
-    SDL_UpdateWindowSurface( gWindow );
+    updateObjects();
+    renderToScreen();
   }
-
   close();
   return 0;
 }
