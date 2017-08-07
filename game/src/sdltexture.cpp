@@ -26,7 +26,7 @@ bool loadMedia() {
 }
 
 bool loadRender() {
-  gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
+  gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
   if( gRenderer == NULL ) {
     SDL_Log( "Renderer could not be created! SDL Error: %d", SDL_GetError() );
     return false;

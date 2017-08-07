@@ -31,6 +31,9 @@ void handleKeyEvent( SDL_Event e ) {
       SDL_Log( "Window %d, key code %d, sym %d down, repeat %d", e.key.windowID, e.key.keysym.sym, e.key.keysym.scancode, e.key.repeat );
     break;
     case SDL_KEYUP:
+      switch ( e.key.keysym.scancode ) {
+        case 'Pause': gametimer.toggle(); break;
+      }
       SDL_Log( "Window %d, key code %d, sym %d up, repeat %d", e.key.windowID, e.key.keysym.sym, e.key.keysym.scancode, e.key.repeat );
     break;
     default: SDL_Log( "Unknown key event %d", e );

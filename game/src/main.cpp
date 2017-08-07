@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
+#include <sstream>
 
 #include "sdldefinitions.cpp"
 #include "sdlobjects.cpp"
@@ -37,11 +38,19 @@ void close() {
   SDL_Quit();
 }
 
+void update() {
+  SDL_Log( "Update %d", SDL_GetTicks() );
+  updateObjects();
+}
+
 int main( int argc, char* args[] ) {
   if ( !init() ) { SDL_Log( "Failed to initialize!" ); close(); return 1; }
   while ( !quit ) {
     pollEvents();
-    updateObjects();
+    int updates = gametimer.update(1000);
+    while ( updates > 0 ) {
+      update();
+    }
     renderToScreen();
   }
   close();

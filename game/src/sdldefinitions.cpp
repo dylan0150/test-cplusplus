@@ -5,34 +5,34 @@ int SCREEN_HEIGHT       = 480;
 
 SDL_Window*   gWindow   = NULL;
 
-class PHYSX_Vector {
-  int x, y;
+class gameTimer {
+  unsigned long int lastTime = 0, currentTime;
+  bool paused = false;
+  unsigned int res = 0;
 public:
-  PHYSX_Vector() {
-    x = 0;
-    y = 0;
+  gameTimer() {}
+  void start() {
+    paused = false;
   }
-  PHYSX_Vector(int _x, int _y) {
-    x = _x;
-    y = _y;
+  void pause() {
+    paused = true;
   }
-  void set(int _x, int _y) {
-    x = _x;
-    y = _y;
+  void toggle() {
+    paused = !paused;
   }
-  void add( PHYSX_Vector vector ) {
-    x += vector.x;
-    y += vector.y;
+  void stop() {
+    paused = true;
+    lastTime = 0;
+  }
+  int update(int interval ) {
+    res = 0;
+    if ( currentTime < lastTime ) { lastTime = 0; };
+    if ( currentTime > lastTime + interval ) {
+      lastTime += interval;
+      res++;
+    }
+    return res;
   }
 };
 
-class GameObject {
-  PHYSX_Vector pos, vel, acl;
-public:
-  GameObject(int x, int y) {
-    pos.set(x,y);
-  }
-  GameObject() {}
-};
-
-std::vector<GameObject> objects;
+gameTimer gametimer;
