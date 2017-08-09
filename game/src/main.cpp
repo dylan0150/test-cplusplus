@@ -1,9 +1,11 @@
 #include <string>
+#include <thread>
 #include <vector>
 #include <SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <sstream>
+#include <SDL_thread.h>
 
 #include "sdldefinitions.cpp"
 #include "sdlobjects.cpp"
@@ -40,7 +42,14 @@ void close() {
 
 void update() {
   SDL_Log( "Update %d", SDL_GetTicks() );
-  updateObjects();
+  //general updates go here;
+  if ( game_paused ) {
+    SDL_Log( "Paused" );
+    //updates that only happen while paused go here
+  } else {
+    SDL_Log( "Unpaused" );
+    //updates that only happen while unpaused go here
+  }
 }
 
 int main( int argc, char* args[] ) {
@@ -50,6 +59,7 @@ int main( int argc, char* args[] ) {
     int updates = gametimer.update(1000);
     while ( updates > 0 ) {
       update();
+      updates--;
     }
     renderToScreen();
   }
